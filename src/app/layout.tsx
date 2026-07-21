@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import {
   Cormorant_Garamond,
   EB_Garamond,
@@ -7,6 +7,7 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { invitation } from "@/data/invitation";
+import { siteUrl } from "@/lib/site";
 
 // Empat font terkunci (spec §1). display: swap → tak ada FOIT; expose sebagai CSS var.
 const cormorant = Cormorant_Garamond({
@@ -39,9 +40,14 @@ const { couple, meta } = invitation;
 const coupleTitle = `${couple.groom.nickname} & ${couple.bride.nickname}`;
 const siteTitle = `Undangan Pernikahan ${coupleTitle}`;
 
+// Warna chrome browser mobile — selaras kanvas ivory.
+export const viewport: Viewport = {
+  themeColor: "#faf6ef",
+};
+
 // Metadata SEO + Open Graph — krusial untuk preview saat link dibagikan via WhatsApp.
 export const metadata: Metadata = {
-  metadataBase: new URL(meta.siteUrl),
+  metadataBase: new URL(siteUrl),
   title: siteTitle,
   description: meta.description,
   keywords: ["undangan pernikahan", "undangan digital", coupleTitle, "wedding"],
@@ -49,7 +55,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "id_ID",
-    url: meta.siteUrl,
+    url: siteUrl,
     siteName: siteTitle,
     title: siteTitle,
     description: meta.description,
