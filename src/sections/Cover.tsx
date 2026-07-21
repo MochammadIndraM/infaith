@@ -75,9 +75,9 @@ export function Cover() {
               The Wedding Of
             </motion.p>
 
-            <h1 className="mt-5 font-display text-6xl font-medium leading-[1.05] text-espresso sm:text-7xl">
+            <h1 className="mt-5 flex flex-col items-center font-display text-6xl font-medium leading-[1.05] text-espresso sm:text-7xl">
               <StaggerText text={couple.groom.nickname} trigger="mount" delay={0.3} />
-              <span className="mx-2 font-signature text-4xl text-gold sm:text-5xl">
+              <span className="my-1 font-signature text-4xl text-gold sm:text-5xl">
                 &amp;
               </span>
               <StaggerText text={couple.bride.nickname} trigger="mount" delay={0.6} />
