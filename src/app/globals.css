@@ -1,26 +1,66 @@
+/* Infaith — undangan pernikahan digital
+ * Art direction (LOCKED, INFAITH_IMPLEMENTATION.md §1):
+ *   Elegan klasik — ivory + emas hangat + espresso. Aksen tunggal = emas.
+ *   Semua warna/font/easing di-derive dari token di bawah. Jangan improvisasi warna baru.
+ */
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Literal design tokens → generate utilities: bg-ivory, text-espresso, border-line, ease-soft, dsb. */
+@theme {
+  /* Palet (nilai persis dari spec §1) */
+  --color-ivory: #faf6ef; /* kanvas utama */
+  --color-ivory-deep: #f1e9da; /* section alternatif / kartu */
+  --color-gold: #b08d57; /* aksen: garis, ornamen, monogram */
+  --color-gold-soft: #cbb185; /* highlight emas lembut / hover */
+  --color-espresso: #2e2620; /* teks utama */
+  --color-espresso-soft: #5a4e44; /* teks sekunder / caption */
+  --color-line: #e3d8c4; /* hairline divider */
+
+  /* Motion personality — satu easing kustom terpusat (ease-out ekspresif) */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --default-transition-timing-function: var(--ease-soft);
+
+  /* Type scale — display lega, body nyaman baca, utility di-track lebar */
+  --tracking-utility: 0.2em;
 }
 
+/* Font tokens referensikan CSS var dari next/font (di-set pada <html>).
+ * @theme inline → utility font-display/-body/-utility/-signature meng-inline var runtime. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-cormorant); /* Cormorant Garamond — nama, judul section */
+  --font-body: var(--font-eb-garamond); /* EB Garamond — paragraf, cerita */
+  --font-utility: var(--font-jost); /* Jost — eyebrow/label/tanggal, UPPERCASE */
+  --font-signature: var(--font-pinyon); /* Pinyon Script — HANYA "&" / satu kata aksen */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-ivory);
+  color: var(--color-espresso);
+  font-family: var(--font-body), Georgia, "Times New Roman", serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Hormati preferensi gerak — matikan smooth-scroll & animasi non-esensial. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

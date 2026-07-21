@@ -1,65 +1,85 @@
-import Image from "next/image";
+"use client";
+
+import { Preloader } from "@/components/Preloader";
+import { AudioPlayer } from "@/components/AudioPlayer";
+import { Cover } from "@/sections/Cover";
+import { Opening } from "@/sections/Opening";
+import { Couple } from "@/sections/Couple";
+import { LoveStory } from "@/sections/LoveStory";
+import { Gallery } from "@/sections/Gallery";
+import { AnimatedSection } from "@/components/animation/AnimatedSection";
+import { Monogram } from "@/components/ui/Monogram";
+import { invitation } from "@/data/invitation";
+
+/**
+ * Rakit undangan.
+ * Preloader → Cover (tirai overlay) → isi undangan di bawahnya.
+ * Section asli dibangun satu per satu (Fase 2); yang belum jadi = placeholder.
+ */
+
+// Urutan section sesuai spec §2 / Fase 2.
+const PLACEHOLDER_SECTIONS = [
+  { id: "event", label: "Event Details", note: "Akad, resepsi, countdown, maps" },
+  { id: "gift", label: "Gift", note: "Amplop digital & rekening" },
+  { id: "rsvp", label: "RSVP", note: "Konfirmasi kehadiran" },
+  { id: "guestbook", label: "Guestbook", note: "Ucapan & doa" },
+] as const;
 
 export default function Home() {
+  const { couple, meta } = invitation;
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <>
+      <Preloader />
+      <Cover />
+      <AudioPlayer />
+
+      <main>
+        <Opening />
+        <Couple />
+        <LoveStory />
+        <Gallery />
+
+        {/* ── SECTION PLACEHOLDERS ──────────────────────────────────── */}
+        {PLACEHOLDER_SECTIONS.map((section, i) => (
+          <AnimatedSection
+            key={section.id}
+            id={section.id}
+            className={`flex min-h-[70vh] flex-col items-center justify-center px-6 py-24 text-center ${
+              i % 2 === 1 ? "bg-ivory-deep" : "bg-ivory"
+            }`}
+          >
+            <span className="font-utility text-[0.7rem] uppercase tracking-utility text-gold">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <h2 className="mt-4 font-display text-4xl font-medium text-espresso sm:text-5xl">
+              {section.label}
+            </h2>
+            <p className="mt-3 font-body text-base text-espresso-soft">
+              {section.note}
+            </p>
+            <span className="mt-8 block h-px w-12 bg-line" aria-hidden="true" />
+          </AnimatedSection>
+        ))}
+
+        {/* ── CLOSING (placeholder) ─────────────────────────────────── */}
+        <AnimatedSection className="flex min-h-[80vh] flex-col items-center justify-center px-6 py-28 text-center">
+          <p className="max-w-md font-body text-lg leading-relaxed text-espresso-soft">
+            {invitation.closing}
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+          <div className="mt-12">
+            <Monogram size={80} />
+          </div>
+          <p className="mt-6 font-signature text-3xl text-gold">
+            {couple.groom.nickname} &amp; {couple.bride.nickname}
+          </p>
+          {meta.hashtag && (
+            <p className="mt-6 font-utility text-xs uppercase tracking-utility text-espresso-soft">
+              {meta.hashtag}
+            </p>
+          )}
+        </AnimatedSection>
       </main>
-    </div>
+    </>
   );
 }
