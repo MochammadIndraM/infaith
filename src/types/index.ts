@@ -84,6 +84,8 @@ export interface Qris {
 }
 
 export interface Gift {
+  /** Kalimat pengantar amplop digital. */
+  note: string;
   accounts: BankAccount[];
   qris: Qris;
   /** Alamat kirim kado fisik (opsional). */
@@ -112,6 +114,29 @@ export interface InvitationMeta {
   hashtag?: string;
   /** Path file lagu latar (placeholder dulu). */
   audioSrc: string;
+}
+
+// ── RSVP & Guestbook (mock) ────────────────────────────────────────
+export type Attendance = "hadir" | "tidak_hadir" | "ragu";
+
+export interface RsvpInput {
+  name: string;
+  attendance: Attendance;
+  /** Jumlah tamu yang hadir (0 bila tidak hadir). */
+  guestCount: number;
+}
+export interface RsvpEntry extends RsvpInput {
+  id: string;
+  createdAt: string;
+}
+
+export interface WishInput {
+  name: string;
+  message: string;
+}
+export interface WishEntry extends WishInput {
+  id: string;
+  createdAt: string;
 }
 
 export interface Invitation {

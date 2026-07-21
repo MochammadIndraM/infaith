@@ -124,6 +124,7 @@ export const invitation: Invitation = {
   ],
 
   gift: {
+    note: "Doa restu Anda merupakan karunia yang paling berarti bagi kami. Namun jika memberi adalah ungkapan tanda kasih, dengan senang hati kami menerimanya secara cashless melalui:",
     accounts: [
       {
         bank: "Bank Central Asia (BCA)",
