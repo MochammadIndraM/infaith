@@ -1,13 +1,10 @@
 import type { Invitation } from "@/types";
+import { BLUR_IVORY } from "@/lib/placeholder";
 
 // ── SUMBER KEBENARAN SEMUA KONTEN ──────────────────────────────────────────
 // Semua nama, tanggal, ayat, timeline, foto, rekening HANYA dari sini.
 // Ganti isi undangan tanpa menyentuh kode komponen.
 // Semua nilai di bawah adalah DUMMY placeholder — tukar dengan data asli nanti.
-
-/** Placeholder blur ivory (SVG data URL) untuk next/image sebelum foto asli masuk. */
-const BLUR_IVORY =
-  "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='8'%20height='8'%3E%3Crect%20width='8'%20height='8'%20fill='%23f1e9da'/%3E%3C/svg%3E";
 
 export const invitation: Invitation = {
   meta: {

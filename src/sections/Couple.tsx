@@ -1,10 +1,12 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import Image from "next/image";
 import { Divider } from "@/components/ui/Divider";
 import { AnimatedSection } from "@/components/animation/AnimatedSection";
 import { invitation } from "@/data/invitation";
 import { DUR, EASE_SOFT } from "@/lib/motion";
+import { BLUR_IVORY } from "@/lib/placeholder";
 import type { Person } from "@/types";
 
 /**
@@ -24,15 +26,21 @@ function CoupleCard({ person, from }: { person: Person; from: "left" | "right" }
       viewport={{ once: true, margin: "0px 0px -12% 0px" }}
       transition={{ duration: reduce ? 0.3 : DUR.slow, ease: EASE_SOFT }}
     >
-      {/* Frame potret — placeholder inisial emas sampai foto asli masuk. */}
+      {/* Frame potret — next/image + blur, bingkai hairline emas. */}
       <div className="relative aspect-3/4 w-full max-w-68 overflow-hidden bg-ivory-deep">
-        <span aria-hidden="true" className="absolute inset-3 border border-gold/40" />
+        <Image
+          src={person.photo}
+          alt={`Foto ${person.fullName}`}
+          fill
+          sizes="(min-width: 768px) 272px, 70vw"
+          placeholder="blur"
+          blurDataURL={BLUR_IVORY}
+          className="object-cover"
+        />
         <span
           aria-hidden="true"
-          className="flex h-full w-full items-center justify-center font-display text-8xl font-medium text-gold/70"
-        >
-          {person.nickname.charAt(0)}
-        </span>
+          className="pointer-events-none absolute inset-3 border border-gold/40"
+        />
       </div>
 
       <h3 className="mt-8 font-display text-3xl font-medium text-espresso sm:text-4xl">
@@ -73,7 +81,7 @@ export function Couple() {
 
           <span
             aria-hidden="true"
-            className="font-signature text-6xl text-gold sm:text-7xl"
+            className="justify-self-center font-signature text-6xl text-gold sm:text-7xl"
           >
             &amp;
           </span>

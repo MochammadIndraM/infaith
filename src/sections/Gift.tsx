@@ -1,11 +1,13 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import { useState } from "react";
 import { AnimatedSection } from "@/components/animation/AnimatedSection";
 import { Divider } from "@/components/ui/Divider";
 import { invitation } from "@/data/invitation";
 import { EASE_SOFT } from "@/lib/motion";
+import { BLUR_IVORY } from "@/lib/placeholder";
 import { cn } from "@/lib/utils";
 
 /**
@@ -106,11 +108,16 @@ export function Gift() {
                   <p className="font-utility text-xs uppercase tracking-utility text-gold">
                     QRIS
                   </p>
-                  {/* Placeholder — tukar dengan next/image saat gambar QRIS asli masuk. */}
-                  <div className="mt-4 flex aspect-square w-40 items-center justify-center border border-gold/40 bg-ivory">
-                    <span className="font-utility text-[0.7rem] uppercase tracking-utility text-espresso-soft">
-                      Kode QR
-                    </span>
+                  <div className="relative mt-4 aspect-square w-40 overflow-hidden border border-gold/40 bg-ivory">
+                    <Image
+                      src={gift.qris.image}
+                      alt={`Kode QRIS ${gift.qris.merchantName}`}
+                      fill
+                      sizes="160px"
+                      placeholder="blur"
+                      blurDataURL={BLUR_IVORY}
+                      className="object-contain p-2"
+                    />
                   </div>
                   <p className="mt-4 font-body text-sm text-espresso-soft">
                     {gift.qris.merchantName}

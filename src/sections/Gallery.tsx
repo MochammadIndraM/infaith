@@ -1,36 +1,21 @@
 "use client";
 
 import { AnimatePresence, motion, type PanInfo } from "framer-motion";
-import { useCallback, useEffect } from "react";
+import Image from "next/image";
+import { useCallback, useEffect, useRef } from "react";
 import { Divider } from "@/components/ui/Divider";
 import { invitation } from "@/data/invitation";
 import { useInvitationStore } from "@/store/useInvitationStore";
 import { EASE_SOFT } from "@/lib/motion";
-import { cn } from "@/lib/utils";
 
 /**
- * FASE 2 · Gallery — masonry (CSS columns) + morph shared-layout ke fullscreen.
+ * FASE 2/3 · Gallery — masonry (CSS columns) + morph shared-layout ke fullscreen.
  * Klik tile → layoutId morph membesar tanpa reload; modal terhubung activeGalleryId.
  * Navigasi: klik panah, keyboard (Esc/←/→), atau swipe-x. Hanya transform/opacity → 60fps.
- * Foto masih placeholder (file belum ada): <GalleryTile> = titik-tukar ke next/image (Fase 3).
+ * next/image: dimensi eksplisit + blur → CLS ~0.
  */
 
 const images = invitation.gallery;
-
-/** Placeholder visual sampai foto asli masuk — tukar dengan next/image di Fase 3. */
-function GalleryTile({ index, large = false }: { index: number; large?: boolean }) {
-  return (
-    <div className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-ivory to-ivory-deep">
-      <span aria-hidden="true" className="absolute inset-2 border border-gold/30" />
-      <span
-        aria-hidden="true"
-        className={cn("font-display text-gold/50", large ? "text-8xl" : "text-4xl")}
-      >
-        {String(index + 1).padStart(2, "0")}
-      </span>
-    </div>
-  );
-}
 
 export function Gallery() {
   const activeId = useInvitationStore((s) => s.activeGalleryId);
@@ -39,6 +24,8 @@ export function Gallery() {
 
   const activeIndex = activeId === null ? -1 : Number(activeId);
   const active = activeIndex >= 0 ? images[activeIndex] : null;
+  const isOpen = active !== null;
+  const closeRef = useRef<HTMLButtonElement>(null);
 
   const goTo = useCallback(
     (i: number) => openGallery(String((i + images.length) % images.length)),
@@ -65,6 +52,11 @@ export function Gallery() {
     };
   }, [active]);
 
+  // Pindahkan fokus ke tombol tutup saat modal dibuka (a11y keyboard).
+  useEffect(() => {
+    if (isOpen) closeRef.current?.focus();
+  }, [isOpen]);
+
   const onDragEnd = (_: unknown, info: PanInfo) => {
     if (info.offset.x < -80) goTo(activeIndex + 1);
     else if (info.offset.x > 80) goTo(activeIndex - 1);
@@ -83,7 +75,7 @@ export function Gallery() {
               type="button"
               onClick={() => openGallery(String(i))}
               aria-label={`Perbesar foto: ${img.alt}`}
-              className="mb-4 block w-full break-inside-avoid overflow-hidden rounded-[2px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-ivory"
+              className="mb-4 block w-full break-inside-avoid overflow-hidden rounded-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-ivory"
             >
               <motion.div
                 layoutId={`photo-${i}`}
@@ -91,7 +83,15 @@ export function Gallery() {
                 style={{ aspectRatio: `${img.width} / ${img.height}` }}
                 transition={{ duration: 0.5, ease: EASE_SOFT }}
               >
-                <GalleryTile index={i} />
+                <Image
+                  src={img.src}
+                  alt={img.alt}
+                  fill
+                  sizes="(min-width: 640px) 33vw, 50vw"
+                  placeholder="blur"
+                  blurDataURL={img.blurDataURL}
+                  className="object-cover"
+                />
               </motion.div>
             </button>
           ))}
@@ -116,6 +116,7 @@ export function Gallery() {
           >
             {/* Tutup */}
             <button
+              ref={closeRef}
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
@@ -162,7 +163,16 @@ export function Gallery() {
               dragElastic={0.2}
               onDragEnd={onDragEnd}
             >
-              <GalleryTile index={activeIndex} large />
+              <Image
+                src={active.src}
+                alt={active.alt}
+                fill
+                sizes="(min-width: 768px) 42rem, 100vw"
+                placeholder="blur"
+                blurDataURL={active.blurDataURL}
+                className="object-contain"
+                draggable={false}
+              />
             </motion.figure>
 
             <figcaption

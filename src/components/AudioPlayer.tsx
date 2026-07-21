@@ -12,13 +12,13 @@ function Equalizer({ playing }: { playing: boolean }) {
   const animate = playing && !reduce;
 
   return (
-    <span aria-hidden="true" className="flex h-4 items-center gap-[3px]">
+    <span aria-hidden="true" className="flex h-4 items-end gap-[3px]">
       {[0, 1, 2].map((bar) => (
         <motion.span
           key={bar}
-          className="w-[3px] rounded-full bg-gold"
-          style={{ height: "40%" }}
-          animate={animate ? { height: ["30%", "100%", "30%"] } : { height: "40%" }}
+          className="h-full w-[3px] origin-bottom rounded-full bg-gold"
+          style={{ scaleY: 0.4 }}
+          animate={animate ? { scaleY: [0.3, 1, 0.3] } : { scaleY: 0.4 }}
           transition={
             animate
               ? { duration: 0.9, ease: "easeInOut", repeat: Infinity, delay: bar * 0.15 }
