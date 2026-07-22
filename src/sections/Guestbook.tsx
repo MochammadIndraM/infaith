@@ -40,9 +40,14 @@ export function Guestbook() {
 
   useEffect(() => {
     let active = true;
-    getWishes().then((list) => {
-      if (active) setWishes(list);
-    });
+    getWishes()
+      .then((list) => {
+        if (active) setWishes(list);
+      })
+      .catch((err) => {
+        // Gagal muat (mis. Supabase belum siap) — jangan crash halaman.
+        console.error("Gagal memuat ucapan:", err);
+      });
     return () => {
       active = false;
     };

@@ -85,10 +85,12 @@ export function Rsvp() {
   const [attendance, setAttendance] = useState<Attendance | null>(null);
   const [guests, setGuests] = useState(1);
   const [status, setStatus] = useState<Status>("idle");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !attendance) {
+      setErrorMsg("Mohon isi nama dan pilih kehadiran terlebih dahulu.");
       setStatus("error");
       return;
     }
@@ -100,7 +102,9 @@ export function Rsvp() {
         guestCount: attendance === "hadir" ? guests : 0,
       });
       setStatus("success");
-    } catch {
+    } catch (err) {
+      console.error("Gagal mengirim RSVP:", err);
+      setErrorMsg("Gagal mengirim konfirmasi. Coba lagi sebentar lagi.");
       setStatus("error");
     }
   };
@@ -211,9 +215,9 @@ export function Rsvp() {
                 )}
               </AnimatePresence>
 
-              {status === "error" && (
+              {status === "error" && errorMsg && (
                 <p className="text-left font-body text-sm text-espresso">
-                  Mohon isi nama dan pilih kehadiran terlebih dahulu.
+                  {errorMsg}
                 </p>
               )}
 
