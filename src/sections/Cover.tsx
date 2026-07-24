@@ -25,9 +25,31 @@ export function Cover() {
   const isOpened = useInvitationStore((s) => s.isOpened);
   const open = useInvitationStore((s) => s.open);
 
+  // Cegah browser me-restore posisi scroll saat refresh — undangan harus
+  // selalu mulai dari atas (Opening) begitu tirai terangkat.
   useEffect(() => {
-    document.body.style.overflow = isOpened ? "" : "hidden";
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+  }, []);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (!isOpened) {
+      // Balikkan konten ke atas selama tirai masih menutup, jadi reveal
+      // selalu memperlihatkan Opening — bukan section terakhir sebelum refresh.
+      // `instant` melewati scroll-behavior:smooth global agar tak teranimasi.
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      // Kunci di html + body: scroll container root ada di <html>, jadi
+      // overflow:hidden pada body saja tak cukup menahan scroll.
+      root.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    } else {
+      root.style.overflow = "";
+      document.body.style.overflow = "";
+    }
     return () => {
+      root.style.overflow = "";
       document.body.style.overflow = "";
     };
   }, [isOpened]);
